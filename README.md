@@ -1,6 +1,6 @@
 # Aura Extension – Reverse Engineering Project
 
-APL project 2026 – Task 4: Reverse Engineer a Result
+APL project 2026 
 
 ## Project purpose
 Reverse engineer the AURA application (shown in a demo video) and rebuild
