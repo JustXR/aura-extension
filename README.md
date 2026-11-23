@@ -1,6 +1,6 @@
 # Aura Extension – Reverse Engineering Project
 
-APL project 2026 – Task 4: Reverse Engineer a Result
+APL project 2026 
 
 ## Project purpose
 Reverse engineer the AURA application (shown in a demo video) and rebuild
@@ -72,6 +72,17 @@ extension that works on any website.
 | content.js    | Runs on every web page and draws the Enforcer overlay     |
 | content.css   | Look of the overlay boxes and labels                      |
 
+<<<<<<< HEAD
 ### Feature 1: Aura Enforcer
 - The popup button saves `enforce: true/false` in `chrome.storage`,
   so every open tab reacts at the same
+=======
+## Phase 3: Completion
+_Coming soon_
+
+## Phase 4: Problems & Solutions
+_Coming soon_
+
+## Conclusion
+_Coming soon_
+>>>>>>> f3c002190b0810037b4d19982b5d3e40cdb91096
