@@ -2,10 +2,41 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <style>
+      body { width: 260px; margin: 0; padding: 16px; background: #0b1220;
+             color: #e2e8f0; font-family: system-ui, sans-serif; }
+      h1 { margin: 0 0 4px; font-size: 22px; letter-spacing: 2px; color: #60a5fa; }
+      .badge { font-size: 11px; color: #60a5fa; border: 1px solid #1e3a8a;
+               border-radius: 6px; padding: 2px 6px; display: inline-block; margin-bottom: 14px; }
+      label { font-size: 12px; color: #94a3b8; display: block; margin-bottom: 4px; }
+      select, button { width: 100%; padding: 8px; border-radius: 8px; font-size: 13px;
+                       border: 1px solid #334155; background: #111827; color: #e2e8f0; margin-bottom: 12px; }
+      button { cursor: pointer; font-weight: 600; }
+      button.active { background: #3b82f6; border-color: #3b82f6; color: #fff; }
+      .card { background: #111827; border: 1px solid #1f2937; border-radius: 8px;
+              padding: 10px; font-size: 12px; line-height: 1.7; }
+      .soon { opacity: .5; }
+    </style>
   </head>
-  <body style="width:220px;font-family:sans-serif">
-    <h3>AURA</h3>
-    <p>Coming soon…</p>
+  <body>
+    <h1>AURA</h1>
+    <div class="badge">Aura Enforcer | Alpha 0.1</div>
+
+    <label class="soon">Persona (coming soon)</label>
+    <select class="soon" disabled>
+      <option>The Voyager (Color Blind)</option>
+      <option>The Beacon (Low Vision)</option>
+    </select>
+
+    <button id="enforceBtn">Simulate Aura Enforcer</button>
+
+    <div class="card">
+      Scanning: <span id="site">…</span><br>
+      Elements labelled: <span id="count">0</span><br>
+      Issues found: <span id="issues">0</span><br>
+      Mode: <span id="mode">IDLE</span>
+    </div>
+
     <script src="popup.js"></script>
   </body>
 </html>

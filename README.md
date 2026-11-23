@@ -45,7 +45,7 @@ extension that works on any website.
 
 ### Tools
 - Chrome Extension (Manifest V3), HTML, CSS, JavaScript
-- VS Code, Git, GitHub Desktop
+- VS Code, Git, GitHub
 - GenAI: Claude
 
 ### Problems and solutions
@@ -63,16 +63,15 @@ extension that works on any website.
   content.js, content.css
 - Loaded the extension in Chrome via Developer mode → Load unpacked
 
-### Problems and solutions
-- **Problem:** The popup showed "Coming soonâ€¦" instead of "Coming soon…".
-  **Solution:** Added `<meta charset="UTF-8">` so Chrome reads the file
-  with the right encoding.
+### Project structure
+| File          | Purpose                                                   |
+|---------------|-----------------------------------------------------------|
+| manifest.json | Extension settings (Manifest V3), permissions, scripts    |
+| popup.html    | The popup UI: persona, Enforcer button, status card       |
+| popup.js      | Saves the on/off setting and asks the page for its status |
+| content.js    | Runs on every web page and draws the Enforcer overlay     |
+| content.css   | Look of the overlay boxes and labels                      |
 
-## Phase 3: Completion
-_Coming soon_
-
-## Phase 4: Problems & Solutions
-_Coming soon_
-
-## Conclusion
-_Coming soon_
+### Feature 1: Aura Enforcer
+- The popup button saves `enforce: true/false` in `chrome.storage`,
+  so every open tab reacts at the same
