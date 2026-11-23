@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Aura Enforcer",
+  "version": "0.1",
+  "description": "Accessibility helper inspired by AURA",
+  "action": { "default_popup": "popup.html" },
+  "permissions": ["storage", "activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ]
+}
