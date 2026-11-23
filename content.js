@@ -86,6 +86,16 @@
     else clear();
   }
 
+  // Personas: set an attribute on <html>, content.css does the styling
+  let persona = "none";
+  function applyPersona(name) {
+    persona = name || "none";
+    if (persona === "none") delete document.documentElement.dataset.auraPersona;
+    else document.documentElement.dataset.auraPersona = persona;
+    // text size changes, so the Enforcer boxes must be redrawn
+    if (enforcing) setTimeout(draw, 100);
+  }
+
   // Redraw when the window size changes
   let timer;
   window.addEventListener("resize", () => {
@@ -95,13 +105,18 @@
   });
 
   // Start with the saved setting, and react when the popup changes it
-  chrome.storage.local.get({ enforce: false }).then(({ enforce }) => apply(enforce));
+  chrome.storage.local.get({ enforce: false, persona: "none" }).then((s) => {
+    applyPersona(s.persona);
+    apply(s.enforce);
+  });
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === "local" && changes.enforce) apply(changes.enforce.newValue);
+    if (area !== "local") return;
+    if (changes.persona) applyPersona(changes.persona.newValue);
+    if (changes.enforce) apply(changes.enforce.newValue);
   });
 
   // Answer the popup's question "how many did you label?"
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-    if (msg.type === "getStatus") sendResponse({ count, issues, enforcing });
+    if (msg.type === "getStatus") sendResponse({ count, issues, enforcing, persona });
   });
 })();

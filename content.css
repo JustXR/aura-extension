@@ -1,5 +1,6 @@
-/* content.css – look of the Enforcer overlay */
+/* content.css – look of the Enforcer overlay and the personas */
 
+/* ---------- Enforcer overlay ---------- */
 #aura-layer {
   position: absolute; top: 0; left: 0; width: 0; height: 0;
   z-index: 2147483647;
@@ -22,6 +23,48 @@
   font: 600 8px/12px system-ui, sans-serif;
   padding: 0 4px; border-radius: 0 0 3px 3px; white-space: nowrap;
 }
-/* Red = a real accessibility problem was found */
-#aura-layer .aura-issue { border-color: #ef4444; background: rgba(239, 68, 68, 0.08); }
+/* Problems: red AND dashed, so they are visible without seeing color */
+#aura-layer .aura-issue {
+  border: 3px dashed #ef4444; background: rgba(239, 68, 68, 0.08);
+}
 #aura-layer .aura-issue .aura-tag { background: #ef4444; color: #fff; }
+
+/* ---------- Persona: The Beacon (Low Vision) ---------- */
+/* Only the page itself gets a black background */
+html[data-aura-persona="beacon"],
+html[data-aura-persona="beacon"] body {
+  background-color: #000 !important;
+}
+html[data-aura-persona="beacon"] body { zoom: 1.15; }
+
+/* All other elements: transparent background, so images behind them
+   stay visible. Text and borders become high-contrast yellow. */
+html[data-aura-persona="beacon"] body *:not(img):not(svg):not(svg *):not(video):not(picture):not(canvas) {
+  background-color: transparent !important;
+  color: #ffd60a !important;
+  border-color: #ffd60a !important;
+  text-shadow: none !important;
+}
+html[data-aura-persona="beacon"] body a {
+  color: #fff !important;
+  text-decoration: underline !important;
+}
+html[data-aura-persona="beacon"] body :focus {
+  outline: 3px solid #fff !important;
+}
+/* Yellow Enforcer boxes, like in the AURA video */
+html[data-aura-persona="beacon"] #aura-layer .aura-box {
+  border-color: #ffd60a; background: rgba(255, 214, 10, 0.08);
+}
+html[data-aura-persona="beacon"] #aura-layer .aura-label { background: #ffd60a; color: #000; }
+html[data-aura-persona="beacon"] #aura-layer .aura-issue { border-color: #ef4444; }
+
+/* ---------- Persona: The Voyager (Color Blind) ---------- */
+html[data-aura-persona="voyager"] body {
+  filter: contrast(1.15) saturate(1.5);
+}
+/* Links are recognised by underline, not only by color */
+html[data-aura-persona="voyager"] body a {
+  text-decoration: underline !important;
+  text-underline-offset: 2px;
+}

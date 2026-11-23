@@ -5,6 +5,7 @@ const siteEl = document.getElementById("site");
 const countEl = document.getElementById("count");
 const issuesEl = document.getElementById("issues");
 const modeEl = document.getElementById("mode");
+const personaEl = document.getElementById("persona");
 
 // Get the tab the user is looking at
 async function getActiveTab() {
@@ -38,10 +39,24 @@ async function refreshStatus() {
   }
 }
 
+// Popup gets the same theme as the chosen persona
+function renderPersona(name) {
+  personaEl.value = name;
+  document.body.dataset.persona = name;
+}
+
 // When the popup opens: show saved state
-chrome.storage.local.get({ enforce: false }).then(({ enforce }) => {
-  render(enforce);
+chrome.storage.local.get({ enforce: false, persona: "none" }).then((s) => {
+  render(s.enforce);
+  renderPersona(s.persona);
   refreshStatus();
+});
+
+// Persona changed: save it, every tab follows
+personaEl.addEventListener("change", async () => {
+  await chrome.storage.local.set({ persona: personaEl.value });
+  renderPersona(personaEl.value);
+  setTimeout(refreshStatus, 400);
 });
 
 // Button click: switch Enforcer on/off (saved, so all tabs follow)

@@ -15,17 +15,26 @@
       button.active { background: #3b82f6; border-color: #3b82f6; color: #fff; }
       .card { background: #111827; border: 1px solid #1f2937; border-radius: 8px;
               padding: 10px; font-size: 12px; line-height: 1.7; }
-      .soon { opacity: .5; }
+
+      /* Beacon persona: popup turns yellow, like in the AURA video */
+      body[data-persona="beacon"] { background: #000; color: #ffd60a; }
+      body[data-persona="beacon"] h1,
+      body[data-persona="beacon"] .badge,
+      body[data-persona="beacon"] label { color: #ffd60a; border-color: #ffd60a; }
+      body[data-persona="beacon"] select,
+      body[data-persona="beacon"] .card { background: #000; color: #ffd60a; border-color: #ffd60a; }
+      body[data-persona="beacon"] button.active { background: #ffd60a; border-color: #ffd60a; color: #000; }
     </style>
   </head>
   <body>
     <h1>AURA</h1>
     <div class="badge">Aura Enforcer | Alpha 0.1</div>
 
-    <label class="soon">Persona (coming soon)</label>
-    <select class="soon" disabled>
-      <option>The Voyager (Color Blind)</option>
-      <option>The Beacon (Low Vision)</option>
+    <label for="persona">Persona</label>
+    <select id="persona">
+      <option value="none">None (default)</option>
+      <option value="voyager">The Voyager (Color Blind)</option>
+      <option value="beacon">The Beacon (Low Vision)</option>
     </select>
 
     <button id="enforceBtn">Simulate Aura Enforcer</button>
