@@ -1,6 +1,6 @@
 # Aura Extension – Reverse Engineering Project
 
-APL project 2026 
+APL project 2026
 
 ## Project purpose
 Reverse engineer the AURA application (shown in a demo video) and rebuild
@@ -72,11 +72,55 @@ extension that works on any website.
 | content.js    | Runs on every web page and draws the Enforcer overlay     |
 | content.css   | Look of the overlay boxes and labels                      |
 
-<<<<<<< HEAD
 ### Feature 1: Aura Enforcer
 - The popup button saves `enforce: true/false` in `chrome.storage`,
-  so every open tab reacts at the same
-=======
+  so every open tab reacts at the same time.
+- `content.js` finds elements on the page and sorts them into four types,
+  like the original:
+  - **STRUCTURE** – headings, header, nav, sections, footer
+  - **INTERACTION** – links, buttons, inputs
+  - **UI ELEMENT** – images, icons, video
+  - **CONTENT BOX** – paragraphs, lists, tables
+- Each element gets an outline and a label, drawn in a separate overlay
+  layer so the website's own layout is not changed and can still be clicked.
+- **Real accessibility checks** (the original only showed fake numbers):
+  - Images without alt text → marked red "Missing alt text"
+  - Links/buttons smaller than 24px → marked red "Small target"
+- The popup shows the real site name, number of labelled elements
+  and number of issues found.
+
+![Enforcer on Wikipedia](screenshots/enforcer-wikipedia.png)
+
+### Problems and solutions
+- **Problem:** The popup showed "Coming soonâ€¦" instead of "Coming soon…".
+  **Solution:** Added `<meta charset="UTF-8">` so Chrome reads the file
+  with the right encoding.
+- **Problem:** The popup updated, but the overlay never appeared on any
+  website. The popup said "Not available here".
+  **Debugging steps:**
+  1. Checked the console – only errors from my ad blocker
+     (`ERR_BLOCKED_BY_CLIENT`), not from my extension.
+  2. Suspected Chrome's site access settings because the extension icon
+     was grey – this was not the cause.
+  3. Checked the DevTools context list – Aura Enforcer was loaded on the page.
+  4. Opened DevTools → Sources → Content scripts → content.js and saw that
+     Chrome's copy of the file was **empty**.
+
+  **Solution:** Chrome reads the popup files fresh every time, but keeps a
+  copy of content scripts until the extension is reloaded. Clicking ↻ on the
+  extension card and refreshing the page fixed it.
+  **Lesson:** After changing content.js, always reload the extension
+  and refresh the page.
+- **Problem:** The screenshot was saved as `enforcer-wikipedia.png.png`
+  because Windows hides file extensions.
+  **Solution:** Renamed the file so the README image link works.
+- **Problem:** `git push` was rejected because I had edited the README
+  directly on GitHub, so GitHub had a commit my local copy didn't have.
+  Pulling caused a merge conflict in README.md.
+  **Solution:** Pulled with `git pull --no-rebase`, resolved the conflict
+  in README.md, then committed and pushed.
+  **Lesson:** Edit in one place only, and always `git pull` before starting work.
+
 ## Phase 3: Completion
 _Coming soon_
 
@@ -85,4 +129,3 @@ _Coming soon_
 
 ## Conclusion
 _Coming soon_
->>>>>>> f3c002190b0810037b4d19982b5d3e40cdb91096
