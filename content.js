@@ -22,7 +22,11 @@
   // Real accessibility checks (the original only showed fake numbers)
   function findIssue(type, el, rect) {
     if (el.tagName === "IMG" && !el.hasAttribute("alt")) return "Missing alt text";
-    if (type.name === "INTERACTION" && (rect.width < 24 || rect.height < 24)) return "Small target";
+    if (type.name === "INTERACTION" && (rect.width < 24 || rect.height < 24)) {
+      // Links inside a sentence are allowed to be small (WCAG 2.2, target size exception)
+      if (el.tagName === "A" && getComputedStyle(el).display === "inline") return null;
+      return "Small target";
+    }
     return null;
   }
 
@@ -96,6 +100,91 @@
     if (enforcing) setTimeout(draw, 100);
   }
 
+  // ---------- Clarify Content ----------
+  // Difficult words -> simpler words (like the text swap in the AURA video)
+  const SIMPLE_WORDS = {
+    "approximately": "about", "utilize": "use", "utilise": "use",
+    "assistance": "help", "commence": "start", "terminate": "end",
+    "purchase": "buy", "numerous": "many", "sufficient": "enough",
+    "additional": "extra", "demonstrate": "show", "facilitate": "help",
+    "obtain": "get", "require": "need", "requires": "needs",
+    "required": "needed", "regarding": "about", "subsequently": "later",
+    "prior to": "before", "in order to": "to", "individuals": "people",
+    "initiate": "start", "modify": "change", "participate": "take part",
+    "consequently": "so", "nevertheless": "still", "therefore": "so",
+    "frequently": "often", "previously": "before", "currently": "now",
+    "accomplish": "do", "establish": "set up", "inquire": "ask",
+    "endeavour": "try", "endeavor": "try", "sufficiently": "enough",
+  };
+  const WORD_RE = new RegExp(
+    "\\b(" +
+      Object.keys(SIMPLE_WORDS)
+        .sort((a, b) => b.length - a.length) // longest phrases first
+        .map((w) => w.replace(/ /g, "\\s+"))
+        .join("|") +
+      ")\\b",
+    "gi"
+  );
+
+  const originals = new Map(); // text node -> original text, to undo later
+  let simplified = 0;
+  let clarifying = false;
+
+  // Keep a capital letter if the original word had one
+  function matchCase(word, replacement) {
+    return word[0] === word[0].toUpperCase()
+      ? replacement[0].toUpperCase() + replacement.slice(1)
+      : replacement;
+  }
+
+  function simplifyText() {
+    const skip = 'script,style,noscript,textarea,input,code,pre,[contenteditable="true"]';
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const parent = node.parentElement;
+        if (!parent || parent.closest(skip)) return NodeFilter.FILTER_REJECT;
+        return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      },
+    });
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    for (const node of nodes) {
+      const text = node.nodeValue;
+      let changes = 0;
+      const newText = text.replace(WORD_RE, (match) => {
+        changes++;
+        const key = match.toLowerCase().replace(/\s+/g, " ");
+        return matchCase(match, SIMPLE_WORDS[key]);
+      });
+      if (changes) {
+        originals.set(node, text);
+        node.nodeValue = newText;
+        simplified += changes;
+      }
+    }
+  }
+
+  function restoreText() {
+    for (const [node, text] of originals) node.nodeValue = text;
+    originals.clear();
+    simplified = 0;
+  }
+
+  function applyClarify(on) {
+    if (on === clarifying) return;
+    clarifying = on;
+    if (on) {
+      document.documentElement.dataset.auraClarify = "on"; // content.css changes the font
+      simplifyText();
+    } else {
+      delete document.documentElement.dataset.auraClarify;
+      restoreText();
+    }
+    // text size changes, so the Enforcer boxes must be redrawn
+    if (enforcing) setTimeout(draw, 100);
+  }
+
   // Redraw when the window size changes
   let timer;
   window.addEventListener("resize", () => {
@@ -105,18 +194,20 @@
   });
 
   // Start with the saved setting, and react when the popup changes it
-  chrome.storage.local.get({ enforce: false, persona: "none" }).then((s) => {
+  chrome.storage.local.get({ enforce: false, persona: "none", clarify: false }).then((s) => {
     applyPersona(s.persona);
+    applyClarify(s.clarify);
     apply(s.enforce);
   });
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== "local") return;
     if (changes.persona) applyPersona(changes.persona.newValue);
+    if (changes.clarify) applyClarify(changes.clarify.newValue);
     if (changes.enforce) apply(changes.enforce.newValue);
   });
 
   // Answer the popup's question "how many did you label?"
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-    if (msg.type === "getStatus") sendResponse({ count, issues, enforcing, persona });
+    if (msg.type === "getStatus") sendResponse({ count, issues, enforcing, persona, simplified });
   });
 })();

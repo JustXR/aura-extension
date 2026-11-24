@@ -37,7 +37,8 @@ Files:
 Labels elements as STRUCTURE, INTERACTION, UI ELEMENT or CONTENT BOX, like in
 the video. Unlike the original, it also does real checks: images without alt
 text and links/buttons smaller than 24px get a red dashed box. The popup shows
-the real number of elements and issues.
+the real number of elements and issues. To keep big pages fast it stops at
+400 elements.
 
 ![Enforcer](screenshots/enforcer-wikipedia.png)
 
@@ -50,6 +51,16 @@ Voyager is not real color-blind correction. That would need color filters,
 which could be a later improvement.
 
 ![Beacon](screenshots/beacon-wikipedia.png)
+
+### Clarify Content
+Switches to an easy-to-read font (Verdana) with more space between letters,
+words and lines, and replaces difficult words with simpler ones, like
+"approximately" → "about". Switching it off brings back the original text.
+The word list is English only, so Swedish sites only get the font change.
+
+All three features can be used at the same time:
+
+![Clarify](screenshots/clarify-wikipedia.png)
 
 ### Problems I ran into
 - Popup showed "Coming soonâ€¦". Fixed by adding `<meta charset="UTF-8">`.
@@ -64,6 +75,9 @@ which could be a later improvement.
 - In Beacon mode the Wikipedia logo disappeared. Using Inspect I found that
   my CSS gave every container a black background that covered the image.
   Now only the page background is black and the rest is transparent.
+- The Enforcer flagged almost every link in the article text as "Small target"
+  (258 issues). WCAG 2.2 says links inside a sentence are an exception, so I
+  skip inline links now. That brought it down to 19 real issues.
 
 ## Phase 3: Completion
 _Coming soon_

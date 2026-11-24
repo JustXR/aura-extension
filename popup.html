@@ -13,6 +13,9 @@
                        border: 1px solid #334155; background: #111827; color: #e2e8f0; margin-bottom: 12px; }
       button { cursor: pointer; font-weight: 600; }
       button.active { background: #3b82f6; border-color: #3b82f6; color: #fff; }
+      .switch { display: flex; align-items: center; gap: 8px; font-size: 13px;
+                color: #e2e8f0; margin-bottom: 12px; cursor: pointer; }
+      .switch input { width: 16px; height: 16px; accent-color: #3b82f6; cursor: pointer; }
       .card { background: #111827; border: 1px solid #1f2937; border-radius: 8px;
               padding: 10px; font-size: 12px; line-height: 1.7; }
 
@@ -20,7 +23,9 @@
       body[data-persona="beacon"] { background: #000; color: #ffd60a; }
       body[data-persona="beacon"] h1,
       body[data-persona="beacon"] .badge,
-      body[data-persona="beacon"] label { color: #ffd60a; border-color: #ffd60a; }
+      body[data-persona="beacon"] label,
+      body[data-persona="beacon"] .switch { color: #ffd60a; border-color: #ffd60a; }
+      body[data-persona="beacon"] .switch input { accent-color: #ffd60a; }
       body[data-persona="beacon"] select,
       body[data-persona="beacon"] .card { background: #000; color: #ffd60a; border-color: #ffd60a; }
       body[data-persona="beacon"] button.active { background: #ffd60a; border-color: #ffd60a; color: #000; }
@@ -39,10 +44,15 @@
 
     <button id="enforceBtn">Simulate Aura Enforcer</button>
 
+    <label class="switch">
+      <input type="checkbox" id="clarify"> Clarify Content
+    </label>
+
     <div class="card">
       Scanning: <span id="site">…</span><br>
       Elements labelled: <span id="count">0</span><br>
       Issues found: <span id="issues">0</span><br>
+      Words simplified: <span id="words">0</span><br>
       Mode: <span id="mode">IDLE</span>
     </div>
 

@@ -6,6 +6,8 @@ const countEl = document.getElementById("count");
 const issuesEl = document.getElementById("issues");
 const modeEl = document.getElementById("mode");
 const personaEl = document.getElementById("persona");
+const clarifyEl = document.getElementById("clarify");
+const wordsEl = document.getElementById("words");
 
 // Get the tab the user is looking at
 async function getActiveTab() {
@@ -32,10 +34,12 @@ async function refreshStatus() {
     const res = await chrome.tabs.sendMessage(tab.id, { type: "getStatus" });
     countEl.textContent = res.count;
     issuesEl.textContent = res.issues;
+    wordsEl.textContent = res.simplified;
   } catch {
     // content.js does not run on chrome:// pages or tabs opened before install
     countEl.textContent = "–";
     issuesEl.textContent = "Not available here (try refreshing the page)";
+    wordsEl.textContent = "–";
   }
 }
 
@@ -46,9 +50,10 @@ function renderPersona(name) {
 }
 
 // When the popup opens: show saved state
-chrome.storage.local.get({ enforce: false, persona: "none" }).then((s) => {
+chrome.storage.local.get({ enforce: false, persona: "none", clarify: false }).then((s) => {
   render(s.enforce);
   renderPersona(s.persona);
+  clarifyEl.checked = s.clarify;
   refreshStatus();
 });
 
@@ -56,6 +61,12 @@ chrome.storage.local.get({ enforce: false, persona: "none" }).then((s) => {
 personaEl.addEventListener("change", async () => {
   await chrome.storage.local.set({ persona: personaEl.value });
   renderPersona(personaEl.value);
+  setTimeout(refreshStatus, 400);
+});
+
+// Clarify Content switch: save it, every tab follows
+clarifyEl.addEventListener("change", async () => {
+  await chrome.storage.local.set({ clarify: clarifyEl.checked });
   setTimeout(refreshStatus, 400);
 });
 

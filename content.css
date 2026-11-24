@@ -1,4 +1,4 @@
-/* content.css – look of the Enforcer overlay and the personas */
+/* content.css – look of the Enforcer overlay, personas and Clarify */
 
 /* ---------- Enforcer overlay ---------- */
 #aura-layer {
@@ -67,4 +67,16 @@ html[data-aura-persona="voyager"] body {
 html[data-aura-persona="voyager"] body a {
   text-decoration: underline !important;
   text-underline-offset: 2px;
+}
+
+/* ---------- Clarify Content ---------- */
+/* Easy-to-read font and more space between letters, words and lines.
+   Icons (<i> and classes with "icon") and code keep their own font. */
+html[data-aura-clarify="on"] body *:not(i):not([class*="icon"]):not(code):not(pre):not(svg):not(svg *) {
+  font-family: Verdana, Tahoma, Arial, sans-serif !important;
+  letter-spacing: 0.03em !important;
+  word-spacing: 0.12em !important;
+}
+html[data-aura-clarify="on"] body :is(p, li, dd, td, blockquote) {
+  line-height: 1.8 !important;
 }
