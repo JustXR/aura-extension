@@ -33,10 +33,13 @@ Files:
 - `popup.html` / `popup.js` – the popup with the controls
 - `content.js` / `content.css` – runs on the web page and does the changes
 
+I built it one feature at a time and tested each one in Chrome before
+starting the next.
+
 ### Enforcer
 Labels elements as STRUCTURE, INTERACTION, UI ELEMENT or CONTENT BOX, like in
 the video. Unlike the original, it also does real checks: images without alt
-text and links/buttons smaller than 24px get a red dashed box. The popup shows
+text and buttons smaller than 24px get a red dashed box. The popup shows
 the real number of elements and issues. To keep big pages fast it stops at
 400 elements.
 
@@ -47,43 +50,74 @@ the real number of elements and issues. To keep big pages fast it stops at
 - Voyager: more contrast and color, underlined links
 - The settings are saved, so all open tabs change at the same time
 
-Voyager is not real color-blind correction. That would need color filters,
-which could be a later improvement.
-
 ![Beacon](screenshots/beacon-wikipedia.png)
 
 ### Clarify Content
 Switches to an easy-to-read font (Verdana) with more space between letters,
 words and lines, and replaces difficult words with simpler ones, like
 "approximately" → "about". Switching it off brings back the original text.
-The word list is English only, so Swedish sites only get the font change.
 
 All three features can be used at the same time:
 
 ![Clarify](screenshots/clarify-wikipedia.png)
 
-### Problems I ran into
-- Popup showed "Coming soonâ€¦". Fixed by adding `<meta charset="UTF-8">`.
-- The overlay didn't show up at all. I first thought it was my ad blocker or
-  site access settings, but in DevTools → Sources I saw that Chrome's copy of
-  content.js was empty. Chrome only reloads content scripts when you reload
-  the extension, so I have to click ↻ after every change.
-- Screenshot got saved as `.png.png` because Windows hides file extensions.
-- I edited the README on GitHub and on my computer at the same time, which
-  gave a merge conflict. Fixed it with `git pull` and by cleaning up the file.
-  Now I only edit locally.
-- In Beacon mode the Wikipedia logo disappeared. Using Inspect I found that
-  my CSS gave every container a black background that covered the image.
-  Now only the page background is black and the rest is transparent.
-- The Enforcer flagged almost every link in the article text as "Small target"
-  (258 issues). WCAG 2.2 says links inside a sentence are an exception, so I
-  skip inline links now. That brought it down to 19 real issues.
-
 ## Phase 3: Completion
-_Coming soon_
+
+I tested the extension on five different kinds of sites:
+
+| Site | Tested | Result |
+|---|---|---|
+| Wikipedia (start page + article) | All features | Works |
+| svt.se (news) | Beacon, Clarify, Enforcer | Works after fix. Clarify only changes font (Swedish) |
+| GitHub (my repo) | Voyager, Beacon, Clarify | Works, labels overlap a lot on dense pages |
+| IKEA (shop) | Beacon, Clarify, Enforcer | Works after fix |
+| vuxenutbildning.stockholm | Voyager, Clarify, Enforcer | Works, 0 issues found |
+
+Testing found two bugs that I fixed:
+- Photos got a yellow tint in Beacon mode. Every Enforcer box had a light fill,
+  and when boxes were nested the fills stacked up. Now the boxes are outlines only.
+- On svt.se the cookie pop-up became see-through in Beacon mode, so its text
+  mixed with the news text behind it. Pop-ups now keep a black background.
+  (Not retested yet, because the pop-up only shows before you accept cookies.)
 
 ## Phase 4: Problems & Solutions
-_Coming soon_
+
+- **Encoding:** Popup showed "Coming soonâ€¦". Fixed with `<meta charset="UTF-8">`.
+- **Overlay didn't show up:** I first thought it was my ad blocker or site access
+  settings, but in DevTools → Sources I saw that Chrome's copy of content.js was
+  empty. Chrome only reloads content scripts when you reload the extension, so
+  now I click ↻ after every change.
+- **Git merge conflict:** I edited the README on GitHub and on my computer at the
+  same time. Fixed it with `git pull` and by cleaning up the file. Now I only
+  edit locally.
+- **Windows file names:** A screenshot got saved as `.png.png` because Windows
+  hides file extensions.
+- **Logo disappeared in Beacon:** Using Inspect I found that my CSS gave every
+  container a black background that covered the image behind it. Now only the
+  page background is black and the rest is transparent.
+- **Too many false issues:** The Enforcer flagged almost every link in the
+  article text as "Small target" (258 issues). WCAG 2.2 says links inside a
+  sentence are an exception, so I skip inline links now. That brought it down
+  to 19 real issues.
+- **Tinted photos and see-through pop-ups:** found during testing, see Phase 3.
 
 ## Conclusion
-_Coming soon_
+
+I ended up with a working Chrome extension that has all three features from the
+AURA demo, and in one way it does more than the original: it finds real
+accessibility problems instead of showing fake numbers.
+
+What I learned:
+- how a Chrome extension is built (manifest, popup, content scripts, storage)
+- to use DevTools (Inspect, Sources, Console) instead of guessing when
+  something doesn't work
+- that fixing one bug can create another (the transparent background fixed the
+  logo but broke pop-ups), so testing on different sites matters
+- basic accessibility rules from WCAG, like target size and not relying on color
+
+What could be better:
+- Voyager is not real color-blind correction, that would need color filters
+- the word list for Clarify is English only and quite short; an AI model could
+  rewrite text properly, like the original promised
+- on dense pages the labels overlap and get hard to read
+- the 400 element limit means long pages are not fully checked
