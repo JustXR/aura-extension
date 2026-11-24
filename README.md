@@ -67,9 +67,26 @@ Deuteranopia, which shows the page the way a color-blind person sees it:
 
 ### Clarify Content
 Switches to an easy-to-read font (Verdana) with more space between letters,
-words and lines, and replaces difficult words with simpler ones in English
-and Swedish, like "approximately" → "about" and "erhålla" → "få".
-Switching it off brings back the original text.
+words and lines, and replaces difficult words with simpler ones. Switching it
+off brings back the original text.
+
+Some examples from the word list (about 40 English and 40 Swedish):
+
+| Difficult | Simple |
+|---|---|
+| approximately | about |
+| utilize | use |
+| in order to | to |
+| erhålla | få |
+| samtliga | alla |
+| i syfte att | för att |
+
+It only changes text on the page, never what the user types in input fields.
+The popup shows how many words were simplified.
+
+On forsakringskassan.se, "för att erhålla en viss nivå" became "för att få en viss nivå":
+
+![Clarify Swedish](screenshots/clarify-swedish.png)
 
 All features can be used at the same time:
 
@@ -77,7 +94,7 @@ All features can be used at the same time:
 
 ## Phase 3: Completion
 
-I tested the extension on five different kinds of sites:
+I tested the extension on six different kinds of sites:
 
 | Site | Tested | Result |
 |---|---|---|
@@ -86,6 +103,7 @@ I tested the extension on five different kinds of sites:
 | GitHub (my repo) | Voyager, Beacon, Clarify | Works, labels overlap a lot on dense pages |
 | IKEA (shop) | Beacon, Clarify, Enforcer | Works after fix |
 | vuxenutbildning.stockholm | Voyager, Clarify, Enforcer | Works, 0 issues found |
+| forsakringskassan.se | Voyager, Clarify | Swedish words simplified |
 
 Testing found two bugs that I fixed:
 - Photos got a yellow tint in Beacon mode. Every Enforcer box had a light fill,
