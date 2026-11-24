@@ -64,10 +64,8 @@ html[data-aura-persona="beacon"] #aura-layer .aura-label { background: #ffd60a; 
 html[data-aura-persona="beacon"] #aura-layer .aura-issue { border-color: #ef4444; }
 
 /* ---------- Persona: The Voyager (Color Blind) ---------- */
-html[data-aura-persona="voyager"] body {
-  filter: contrast(1.15) saturate(1.5);
-}
-/* Links are recognised by underline, not only by color */
+/* The color filter itself is added by content.js (SVG color matrix).
+   Links are recognised by underline, not only by color */
 html[data-aura-persona="voyager"] body a {
   text-decoration: underline !important;
   text-underline-offset: 2px;

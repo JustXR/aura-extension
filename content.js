@@ -90,12 +90,39 @@
     else clear();
   }
 
+  // Voyager: a color filter for red-green color blindness (deuteranopia,
+  // the most common type). It moves the red/green difference into blue,
+  // so colors that look the same to a color-blind person become different.
+  // Grey, black and white stay the same.
+  function addVoyagerFilter() {
+    if (document.getElementById("aura-voyager-svg")) return;
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.id = "aura-voyager-svg";
+    svg.setAttribute("style", "position:absolute;width:0;height:0");
+    svg.innerHTML =
+      '<filter id="aura-voyager-filter" color-interpolation-filters="sRGB">' +
+      '<feColorMatrix type="matrix" values="' +
+      "1.000 0.000 0.000 0 0 " +
+      "0.202 0.798 0.000 0 0 " +
+      "0.517 -0.517 1.000 0 0 " +
+      "0 0 0 1 0" +
+      '"/></filter>';
+    document.documentElement.append(svg);
+  }
+
   // Personas: set an attribute on <html>, content.css does the styling
   let persona = "none";
   function applyPersona(name) {
     persona = name || "none";
     if (persona === "none") delete document.documentElement.dataset.auraPersona;
     else document.documentElement.dataset.auraPersona = persona;
+
+    if (persona === "voyager") {
+      addVoyagerFilter();
+      document.body.style.setProperty("filter", "url(#aura-voyager-filter)", "important");
+    } else {
+      document.body.style.removeProperty("filter");
+    }
     // text size changes, so the Enforcer boxes must be redrawn
     if (enforcing) setTimeout(draw, 100);
   }
@@ -103,6 +130,7 @@
   // ---------- Clarify Content ----------
   // Difficult words -> simpler words (like the text swap in the AURA video)
   const SIMPLE_WORDS = {
+    // English
     "approximately": "about", "utilize": "use", "utilise": "use",
     "assistance": "help", "commence": "start", "terminate": "end",
     "purchase": "buy", "numerous": "many", "sufficient": "enough",
@@ -115,15 +143,32 @@
     "frequently": "often", "previously": "before", "currently": "now",
     "accomplish": "do", "establish": "set up", "inquire": "ask",
     "endeavour": "try", "endeavor": "try", "sufficiently": "enough",
+    // Swedish
+    "erhålla": "få", "erhåller": "får", "erhöll": "fick",
+    "beträffande": "om", "angående": "om", "huruvida": "om",
+    "med avseende på": "om", "i syfte att": "för att",
+    "i enlighet med": "enligt", "i samband med": "vid",
+    "tillhandahålla": "ge", "tillhandahåller": "ger",
+    "påbörja": "börja", "påbörjar": "börjar", "påbörjas": "börjar",
+    "nyttja": "använda", "nyttjar": "använder",
+    "tillämpa": "använda", "tillämpar": "använder", "tillämpas": "används",
+    "genomföra": "göra", "genomför": "gör", "genomförs": "görs",
+    "inneha": "ha", "innehar": "har", "föreligger": "finns",
+    "erforderlig": "nödvändig", "erforderliga": "nödvändiga",
+    "samtliga": "alla", "således": "alltså", "förefaller": "verkar",
+    "ombesörja": "ordna", "ombesörjer": "ordnar", "ånyo": "igen",
+    "såsom": "som",
   };
+  // Match whole words only. \p{L} = any letter, so å, ä and ö also count
+  // (the normal \b only knows a–z and would match inside Swedish words).
   const WORD_RE = new RegExp(
-    "\\b(" +
+    "(?<!\\p{L})(" +
       Object.keys(SIMPLE_WORDS)
         .sort((a, b) => b.length - a.length) // longest phrases first
         .map((w) => w.replace(/ /g, "\\s+"))
         .join("|") +
-      ")\\b",
-    "gi"
+      ")(?!\\p{L})",
+    "giu"
   );
 
   const originals = new Map(); // text node -> original text, to undo later
