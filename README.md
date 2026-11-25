@@ -1,10 +1,8 @@
 # Aura Extension – Reverse Engineering Project
 
-APL project 2026
 
-## About
-I got a demo video of an app called AURA and had to figure out how it was
-built and make my own version. I rebuilt it as a Chrome extension.
+# About
+I got a demo video of an app called AURA and rebuilt my own version of it as a Chrome extension.
 
 ## Phase 1: Research
 
