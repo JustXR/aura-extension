@@ -8,18 +8,17 @@ built and make my own version. I rebuilt it as a Chrome extension.
 
 ## Phase 1: Research
 
-In the video AURA is described as a Windows app with local AI that fixes
-accessibility problems. The demo itself is just a static web page with:
+In the video AURA is described as an app with AI that fixes accessibility
+problems. The demo shows:
 - a persona dropdown (Voyager – color blind, Beacon – low vision)
 - a "Simulate Aura Enforcer" button that outlines and labels everything on the page
 - a "Clarify Content" toggle that makes the text simpler
-- a status box with numbers that never change (hard-coded)
+- a status box that showed the same numbers the whole video
 
 My guess was that the page loops through elements and adds outlines, and that
 the personas just switch CSS classes.
 
-A full Windows app with AI wasn't realistic in 3.5 days, so after talking to my
-supervisor I made a Chrome extension with the same idea that works on any website.
+I chose to build it as a Chrome extension, so it works on any website.
 
 Tools: Chrome Extension (Manifest V3), HTML, CSS, JavaScript, VS Code, Git, GitHub, Claude.
 
@@ -38,10 +37,10 @@ starting the next.
 
 ### Enforcer
 Labels elements as STRUCTURE, INTERACTION, UI ELEMENT or CONTENT BOX, like in
-the video. Unlike the original, it also does real checks: images without alt
-text and buttons smaller than 24px get a red dashed box. The popup shows
-the real number of elements and issues. To keep big pages fast it stops at
-400 elements.
+the video. My version also does real checks: images without alt text and
+buttons smaller than 24px get a red dashed box. The popup shows the number of
+elements and issues on the page you're looking at. To keep big pages fast it
+stops at 400 elements.
 
 ![Enforcer](screenshots/enforcer-wikipedia.png)
 
@@ -122,10 +121,6 @@ After testing I also improved two things:
 ## Phase 4: Problems & Solutions
 
 - **Encoding:** Popup showed "Coming soonâ€¦". Fixed with `<meta charset="UTF-8">`.
-- **Overlay didn't show up:** I first thought it was my ad blocker or site access
-  settings, but in DevTools → Sources I saw that Chrome's copy of content.js was
-  empty. Chrome only reloads content scripts when you reload the extension, so
-  now I click ↻ after every change.
 - **Git merge conflict:** I edited the README on GitHub and on my computer at the
   same time. Fixed it with `git pull` and by cleaning up the file. Now I only
   edit locally.
@@ -145,13 +140,12 @@ After testing I also improved two things:
 ## Conclusion
 
 I ended up with a working Chrome extension that has all three features from the
-AURA demo, and in some ways it does more than the original: it finds real
-accessibility problems instead of showing fake numbers, and the color-blind mode
-is a real filter that I could test with a simulator.
+AURA demo. It checks each page for real accessibility problems, and the
+color-blind mode is a real filter that I could test with a simulator.
 
 What I learned:
 - how a Chrome extension is built (manifest, popup, content scripts, storage)
-- to use DevTools (Inspect, Sources, Rendering) instead of guessing when
+- to use DevTools (Inspect, Rendering) instead of guessing when
   something doesn't work
 - that fixing one bug can create another (the transparent background fixed the
   logo but broke pop-ups), so testing on different sites matters
